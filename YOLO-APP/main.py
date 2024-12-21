@@ -156,3 +156,84 @@ def process_frame(frame):
     processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_RGB2BGR)  # Convert back to BGR
 
     return processed_frame
+
+# Streamlit UI setup
+st.markdown('<h1 class="main-title">Object Detection System</h1>', unsafe_allow_html=True)
+st.markdown('<p class="custom-text">Upload a video, use your webcam, or upload an image for real-time object detection.</p>', unsafe_allow_html=True)
+
+# Sidebar for input options
+st.sidebar.title("Control Panel")
+use_webcam = st.sidebar.checkbox("Use Webcam")
+uploaded_video = st.sidebar.file_uploader("Upload a video", type=["mp4", "avi", "mov"])
+uploaded_image = st.sidebar.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+
+# Initialize webcam capture variable
+video_capture = None
+
+# Handle image upload
+if uploaded_image is not None and not use_webcam and not uploaded_video:
+    st.write("Processing uploaded image...")
+
+    # Load and process the image
+    input_image = Image.open(uploaded_image)
+    processed_image = process_frame(np.array(input_image))
+
+    # Create two columns for side-by-side display
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Input Image")
+        st.image(input_image, use_container_width=True)
+
+    with col2:
+        st.subheader("Processed Image")
+        st.image(processed_image, use_container_width=True)
+
+    # Allow the user to download the processed image
+    img_buffer = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
+    Image.fromarray(processed_image).save(img_buffer, format="PNG")
+    img_buffer.close()
+
+
+# Handle video upload
+if uploaded_video is not None and not use_webcam:
+    st.write("Processing uploaded video...")
+
+    # Save uploaded video to a temporary file
+    temp_video = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    temp_video.write(uploaded_video.read())
+    temp_video.close()
+
+    # Open video using OpenCV
+    cap = cv2.VideoCapture(temp_video.name)
+
+    # Define output video settings
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for the output video
+
+    # Temporary file for processed video
+    temp_processed_video = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    out = cv2.VideoWriter(temp_processed_video.name, fourcc, fps, (width, height))
+
+    stframe = st.empty()
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        # Process the frame
+        processed_frame = process_frame(frame)
+
+        # Write the processed frame to the output video
+        out.write(processed_frame)
+
+        # Display the processed frame
+        stframe.image(processed_frame, channels="BGR", use_container_width=True)
+
+    cap.release()
+    out.release()
+
+    st.write("Video processing complete.")
