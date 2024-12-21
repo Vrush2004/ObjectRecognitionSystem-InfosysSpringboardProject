@@ -92,3 +92,67 @@ st.markdown(
         .st-emotion-cache-1ibsh2c{
             padding: 30px
         }
+        .st-emotion-cache-12fmjuu {
+            display: none;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #000046;  
+        }
+        .stFileUploader {
+            background-color: #000056;  /* Replace with your desired color */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px dashed #00f5d4;
+        }
+        .st-emotion-cache-taue2i {
+            background-color: #000069;
+            color: #e6e6e6;
+            font-size: 15px;
+        }
+        .st-emotion-cache-1aehpvj {
+            color: rgba(204, 204, 204, 0.7);
+            font-size: 14px;
+        }
+        .st-emotion-cache-zaw6nw {
+            color: #00004d;
+            background-color: #00f5d4;
+            border: 1px solid rgba(49, 51, 63, 0.2);
+        }
+        .center-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+         .center-button button {
+            color:  #00004d;
+        }
+        .st-emotion-cache-1v45yng .es2srfl9 {
+            width: 100%;
+            color: #e6e6e6;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Load the pretrained YOLOv5 model
+@st.cache_resource
+def load_model():
+    return torch.hub.load('ultralytics/yolov5', 'yolov5m')
+
+model = load_model()
+
+# Function to process frames
+def process_frame(frame):
+    # Convert frame (numpy array) to PIL image
+    image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+
+    # Perform YOLOv5 inference
+    results = model(image)
+
+    # Render the results on the frame
+    results.render()
+    processed_frame = results.ims[0]  # Annotated frame
+    processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_RGB2BGR)  # Convert back to BGR
+
+    return processed_frame
