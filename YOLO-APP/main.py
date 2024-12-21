@@ -39,3 +39,56 @@ background_image_path = "./bg3.jpg"
 
 # Apply the background image
 set_background_image(background_image_path)
+
+# Custom CSS for futuristic theme and to control video size
+st.markdown(
+    """
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            background-color: #121212;  
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+        .main-title {
+            font-size: 3rem;  
+            text-align: center;
+            color: #00f5d4;
+            font-weight: bold;
+        }
+        .st-emotion-cache-1mw54nq h1{
+            color: #00f5d4;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 15px
+        }
+        h1#object-detection-system.main-title{
+            color: #00f5d4;
+        }
+        .stApp p{
+            text-align: center;
+            color: white;
+        }
+        .custom-text {
+            font-size: 20px;
+            text-align: center;
+            color: white;
+        }
+        .stButton > button {
+            background-color: #00f5d4;
+            color: black;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+        .stButton > button:hover {
+            background-color: #00b8a9;
+        }
+        .stImage, .stVideo, .stWebcam {
+            width: 80%;  /* Set the width */
+            height: 80%;  /* Maintain aspect ratio */
+        }
+        .st-emotion-cache-1ibsh2c{
+            padding: 30px
+        }
