@@ -1,5 +1,6 @@
-flask
-ultralytics
 opencv-python
+Pillow
+streamlit
 numpy
-pillow
+matplotlib
+pyyaml
