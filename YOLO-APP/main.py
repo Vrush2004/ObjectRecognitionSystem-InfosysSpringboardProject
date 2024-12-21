@@ -237,3 +237,46 @@ if uploaded_video is not None and not use_webcam:
     out.release()
 
     st.write("Video processing complete.")
+
+# Handle webcam input
+if use_webcam:
+    st.write("Capturing from webcam...")
+
+    # Start the webcam if not already started
+    if video_capture is None:
+        video_capture = cv2.VideoCapture(0)
+
+    if not video_capture.isOpened():
+        st.error("Could not access the webcam. Please check your device.")
+    else:
+        stframe = st.empty()  # Placeholder for displaying frames
+        st.markdown('<div class="center-button">', unsafe_allow_html=True)
+        stop_webcam_button = st.button("Stop Webcam", key="stop_webcam")
+        st.markdown('</div>', unsafe_allow_html=True)  # Button outside the loop
+
+        while video_capture.isOpened():
+            ret, frame = video_capture.read()
+            if not ret:
+                st.error("Failed to capture frame.")
+                break
+
+            # Remove mirroring
+            frame = cv2.flip(frame, 1)
+
+            # Process the frame using YOLOv5 inference
+            processed_frame = process_frame(frame)
+
+            # Display the processed frame in the placeholder
+            stframe.image(processed_frame, channels="BGR", use_container_width=True)
+
+            # Stop webcam if the button is pressed or checkbox is unchecked
+            if stop_webcam_button or not use_webcam:
+
+                video_capture.release()  # Release the webcam
+                stframe.empty()  # Clear the frame
+                st.write("Webcam feed stopped.")
+                break
+
+# Release the webcam if it's still open
+if video_capture and video_capture.isOpened():
+    video_capture.release()
