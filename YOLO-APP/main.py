@@ -6,8 +6,10 @@ import numpy as np
 import tempfile
 import streamlit as st
 import base64
+import os
 
 # Set page config for the futuristic theme
+port = int(os.environ.get("PORT", 8501))
 st.set_page_config(
     page_title="Object Detection System",
     page_icon="🤖",
@@ -138,9 +140,7 @@ st.markdown(
 # Load the pretrained YOLOv5 model
 @st.cache_resource
 def load_model():
-    with st.spinner("Loading YOLOv5 model..."):
-        model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
-    return model
+    return torch.hub.load('ultralytics/yolov5', 'yolov5m')
 
 model = load_model()
 
@@ -282,3 +282,8 @@ if use_webcam:
 # Release the webcam if it's still open
 if video_capture and video_capture.isOpened():
     video_capture.release()
+
+
+if __name__ == "__main__":
+    st._config.set_option("server.port", port)
+    st._config.set_option("server.address", "0.0.0.0")  
