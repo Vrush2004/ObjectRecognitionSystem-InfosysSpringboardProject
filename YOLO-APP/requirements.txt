@@ -4,8 +4,4 @@ streamlit
 numpy
 matplotlib
 pyyaml
-torch             # Required for YOLOv5
-torchvision       # Required for YOLOv5
-protobuf<=3.20.3  # Fixes compatibility issues with Streamlit
-pyarrow           # Handles large file uploads if needed
-pandas            # If you're processing data in DataFrame format
+torch            
