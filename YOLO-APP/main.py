@@ -138,7 +138,7 @@ st.markdown(
 # Load the pretrained YOLOv5 model
 @st.cache_resource
 def load_model():
-    return torch.hub.load('ultralytics/yolov5', 'yolov5m')
+    return torch.hub.load('ultralytics/yolov5', 'yolov5s')
 
 model = load_model()
 
