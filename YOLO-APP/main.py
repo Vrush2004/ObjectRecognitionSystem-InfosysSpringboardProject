@@ -123,7 +123,9 @@ st.markdown(
         .center-button {
             display: flex;
             justify-content: center;
+            align-items: center;
             margin-top: 20px;
+            width: 100%;
         }
          .center-button button {
             color:  #00004d;
@@ -184,11 +186,12 @@ if uploaded_image is not None and not use_webcam and not uploaded_video:
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Input Image")
+        st.markdown("<h3 style='color: #00f5d4;'>Input Image</h3>", unsafe_allow_html=True)  # Add color to the header
         st.image(input_image, use_container_width=True)
 
+    # Processed Image
     with col2:
-        st.subheader("Processed Image")
+        st.markdown("<h3 style='color: #00f5d4;'>Processed Image</h3>", unsafe_allow_html=True)  # Add color to the header
         st.image(processed_image, use_container_width=True)
 
     # Allow the user to download the processed image
@@ -247,6 +250,8 @@ if use_webcam:
     # Start the webcam if not already started
     if video_capture is None:
         video_capture = cv2.VideoCapture(0)
+        video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, 500)  # Set width
+        video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 350)  # Set height
 
     if not video_capture.isOpened():
         st.error("Could not access the webcam. Please check your device.")
